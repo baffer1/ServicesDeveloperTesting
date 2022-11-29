@@ -16,5 +16,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="WebApiShared" Version="1.0.0" />
   </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="CoursesApi.IntegrationTests"/>
+    </ItemGroup>
 
 </Project>

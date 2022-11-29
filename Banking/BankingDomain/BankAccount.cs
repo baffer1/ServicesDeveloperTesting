@@ -3,8 +3,10 @@
 public class BankAccount
 {
     private decimal _balance = 5000m;
-    public BankAccount()
+    private readonly INotifyOfOverdrafts _overdraftNotifier;
+    public BankAccount(INotifyOfOverdrafts overdraftNotifier)
     {
+        _overdraftNotifier = overdraftNotifier;
     }
 
     public void Deposit(decimal amountToDeposit)
@@ -19,6 +21,16 @@ public class BankAccount
 
     public void Withdraw(decimal amountToWithdraw)
     {
-        _balance -= amountToWithdraw;
+        if (amountToWithdraw > _balance)
+        {
+            _overdraftNotifier.NotifyOfOverdraftAttempt(this, amountToWithdraw);
+            throw new AccountOverdraftException(); 
+        }
+        else
+        { 
+            _balance -= amountToWithdraw; 
+        }
     }
+
+
 }
