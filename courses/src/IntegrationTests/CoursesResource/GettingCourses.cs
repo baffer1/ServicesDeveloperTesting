@@ -6,7 +6,7 @@ using Alba;
 
 using CoursesApi.Models;
 
-using IntegrationTests.CoursesResource.Fixtures;
+using CoursesApi.IntegrationTests.CoursesResource.Fixtures;
 
 namespace IntegrationTests.CoursesResource
 {

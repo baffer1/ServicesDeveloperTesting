@@ -1,5 +1,4 @@
-﻿
-using Alba;
+﻿using Alba;
 using CoursesApi.Adapters;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -8,14 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CoursesApi.IntegrationTests.CoursesResource.Fixtures;
-
-public class CoursesResourceFixture : IAsyncLifetime
- {
-    private readonly string SQL_IMAGE = "jeffrygonzalez/sdt-nov-2022-sql:20221115192103_Initial";
-    public IAlbaHost AlbaHost = null;
-
+public class CoursesSeededResourceFixture : IAsyncLifetime
+{
+    private readonly string SQL_IMAGE = "jeffrygonzalez/sdt-nov-2022-sql:20221115192103_Initial-seeded";
+    public IAlbaHost AlbaHost = null!;
     private readonly TestcontainerDatabase _sqlContainer;
-    public CoursesResourceFixture()
+
+    public CoursesSeededResourceFixture()
     {
         _sqlContainer = new TestcontainersBuilder<MsSqlTestcontainer>()
             .WithDatabase(new MsSqlTestcontainerConfiguration
@@ -24,12 +22,6 @@ public class CoursesResourceFixture : IAsyncLifetime
                 Password = "TokyoJoe138!"
             }).WithImage(SQL_IMAGE).Build();
     }
-    public async Task DisposeAsync()
-    {
-        await _sqlContainer.StopAsync();
-        await AlbaHost.DisposeAsync();
-    }
-
     public async Task InitializeAsync()
     {
         await _sqlContainer.StartAsync();
@@ -49,16 +41,17 @@ public class CoursesResourceFixture : IAsyncLifetime
                     throw new ArgumentNullException("There is no Service Configured");
                 }
 
-
-
                 services.AddDbContext<CoursesDataContext>(options =>
                 {
                     options.UseSqlServer(_sqlContainer.ConnectionString);
                 });
-
-
-
             });
         });
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _sqlContainer.StopAsync();
+        await AlbaHost.DisposeAsync();
     }
 }
